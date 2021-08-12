@@ -11,12 +11,13 @@ import {
   createAssistant,
   AssistantAppState,
 } from "@sberdevices/assistant-client";
+import { Container, TextField } from "@sberdevices/plasma-ui";
 import "./App.css";
 
 import { reducer } from "./store";
 
 const initializeAssistant = (getState: any) => {
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === "production") {
     return createSmartappDebugger({
       token: process.env.REACT_APP_TOKEN ?? "",
       initPhrase: `Запусти ${process.env.REACT_APP_SMARTAPP}`,
@@ -59,11 +60,23 @@ export const App: FC = memo(() => {
 
   return (
     <main className="container">
+      <TextField 
+          type="text"
+          placeholder="Add Note"
+          value={note}
+          onChange={({ target: { value } }) => setNote(value)}
+          onSubmit={() => {
+            console.log("Enter!");
+          }}    
+        />
+      <Container>
+        
       <form
         onSubmit={(event) => {
           event.preventDefault();
           dispatch({ type: "add_note", note });
           setNote("");
+          console.log("Enter!")
         }}
       >
         <input
@@ -75,7 +88,7 @@ export const App: FC = memo(() => {
           required
           autoFocus
         />
-      </form>
+      </form> 
       <ul className="notes">
         {appState.notes.map((note, index) => (
           <li className="note" key={note.id}>
@@ -98,6 +111,7 @@ export const App: FC = memo(() => {
           </li>
         ))}
       </ul>
+      </Container>
     </main>
   );
 });
